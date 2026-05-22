@@ -180,6 +180,27 @@ export const SiteConfigProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const [isAdminMode, setIsAdminMode] = useState<boolean>(false);
 
+  // Sync state with global server database on mount
+  useEffect(() => {
+    fetch('/api/config')
+      .then(res => {
+        if (!res.ok) throw new Error('API DB response not OK');
+        return res.json();
+      })
+      .then(data => {
+        if (data && typeof data === 'object' && Object.keys(data).length > 0) {
+          setConfig(prev => {
+            const merged = { ...prev, ...data };
+            localStorage.setItem('site_custom_config', JSON.stringify(merged));
+            return merged;
+          });
+        }
+      })
+      .catch(err => {
+        console.warn('Backend database not reachable, using offline browser caches.', err);
+      });
+  }, []);
+
   // Apply visual colors directly on CSS variables
   useEffect(() => {
     const styleEl = document.getElementById('site-dynamic-theme-overrides') || document.createElement('style');
@@ -256,6 +277,16 @@ export const SiteConfigProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       }
 
       localStorage.setItem('site_custom_config', JSON.stringify(nextConfig));
+
+      // Asynchronously sync modifications to server database file
+      fetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(nextConfig)
+      }).catch(err => {
+        console.error('Failed to submit updated config to server database:', err);
+      });
+
       return nextConfig;
     });
   };
@@ -263,6 +294,13 @@ export const SiteConfigProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const resetConfig = () => {
     localStorage.removeItem('site_custom_config');
     setConfig(DEFAULT_CONFIG);
+
+    // Sync reset to server database
+    fetch('/api/config/reset', {
+      method: 'POST'
+    }).catch(err => {
+      console.error('Failed to reset config on server database:', err);
+    });
   };
 
   return (

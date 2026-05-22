@@ -52,14 +52,28 @@ export default function AdminPanel() {
   }, [isAdminMode]);
 
   const loadLeads = () => {
-    const data = localStorage.getItem('waterproofing_quotes');
-    if (data) {
-      try {
-        setLeads(JSON.parse(data));
-      } catch (err) {
-        console.error(err);
-      }
-    }
+    fetch('/api/leads')
+      .then(res => {
+        if (!res.ok) throw new Error('API leads error');
+        return res.json();
+      })
+      .then(data => {
+        if (Array.isArray(data)) {
+          setLeads(data);
+          localStorage.setItem('waterproofing_quotes', JSON.stringify(data));
+        }
+      })
+      .catch(err => {
+        console.warn('Could not load central server leads. Falling back to local device storage.', err);
+        const data = localStorage.getItem('waterproofing_quotes');
+        if (data) {
+          try {
+            setLeads(JSON.parse(data));
+          } catch (e) {
+            console.error(e);
+          }
+        }
+      });
   };
 
   const handleDeleteLead = (id: string) => {
@@ -67,6 +81,12 @@ export default function AdminPanel() {
       const updated = leads.filter(l => l.id !== id);
       setLeads(updated);
       localStorage.setItem('waterproofing_quotes', JSON.stringify(updated));
+
+      fetch(`/api/leads/${id}`, {
+        method: 'DELETE'
+      })
+      .then(() => loadLeads())
+      .catch(err => console.error('Error deleting lead from remote DB:', err));
     }
   };
 
@@ -74,6 +94,12 @@ export default function AdminPanel() {
     if (window.confirm('Bạn có chắc chắn muốn xóa TOÀN BỘ danh sách đăng ký khảo sát của khách hàng?')) {
       localStorage.removeItem('waterproofing_quotes');
       setLeads([]);
+
+      fetch('/api/leads', {
+        method: 'DELETE'
+      })
+      .then(() => loadLeads())
+      .catch(err => console.error('Error clearing database leads:', err));
     }
   };
 

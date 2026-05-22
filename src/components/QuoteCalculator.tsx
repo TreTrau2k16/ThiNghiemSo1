@@ -139,6 +139,17 @@ export default function QuoteCalculator() {
     setSavedRequests(updated);
     localStorage.setItem('waterproofing_quotes', JSON.stringify(updated));
 
+    // Submit to central server database API immediately
+    fetch('/api/leads', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newRequest)
+    }).catch(err => {
+      console.error('Failed to submit quote request to server database:', err);
+    });
+
     // Reset fields & show success state
     setFullName('');
     setPhone('');
