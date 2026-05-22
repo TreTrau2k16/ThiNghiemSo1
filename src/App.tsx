@@ -6,6 +6,7 @@ import Process from './components/Process';
 import ProjectShowcase from './components/ProjectShowcase';
 import QuoteCalculator from './components/QuoteCalculator';
 import ContactConsultation from './components/ContactConsultation';
+import ContactForm from './components/ContactForm';
 import AdminPanel from './components/AdminPanel';
 import { useSiteConfig } from './context/SiteConfigContext';
 import { 
@@ -330,12 +331,9 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Calculator and form panel directly loaded here for complete flow */}
-                  <div className="lg:col-span-6 bg-slate-50 p-6 sm:p-8 rounded-3xl border border-slate-100">
-                    <h3 className="text-sm font-bold text-slate-900 border-b border-slate-200 pb-3.5 mb-5 uppercase tracking-wide">
-                      Mẫu đăng ký thông tin khảo sát
-                    </h3>
-                    <QuoteCalculator />
+                  {/* Compact, professionally-spaced dynamic lead reservation form */}
+                  <div className="lg:col-span-6">
+                    <ContactForm />
                   </div>
 
                 </div>

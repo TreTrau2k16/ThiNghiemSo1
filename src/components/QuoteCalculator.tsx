@@ -343,12 +343,12 @@ export default function QuoteCalculator() {
 
               {/* Data numbers layout */}
               <div className="space-y-4">
-                <div className="flex justify-between items-end">
+                <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-2 border-b border-slate-800/40 pb-2.5">
                   <span className="text-xs text-slate-400 font-medium font-sans">Diện tích màng phủ ước tính:</span>
                   <strong className="text-xl font-extrabold text-white font-mono">{computedArea.toLocaleString()} m²</strong>
                 </div>
 
-                <div className="flex justify-between items-end">
+                <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-2 border-b border-slate-800/40 pb-2.5">
                   <span className="text-xs text-slate-400 font-medium font-sans">Mức hao phí thi công bổ sung:</span>
                   <strong className="text-xs font-semibold text-slate-300 font-sans">Chi tiết góc + 12% hao hụt</strong>
                 </div>
