@@ -1,0 +1,6 @@
+{
+  "name": "Dịch Vụ Thi Công Chống Thấm",
+  "description": "Hồ sơ năng lực, quy trình thực hiện và hình ảnh thực tế các dự án thi công chống thấm dân dụng và công nghiệp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
